@@ -1,0 +1,592 @@
+/* Aura Web Co-Pilot - Floating UI */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --aura-purple: #A855F7;
+  --aura-violet: #8B5CF6;
+  --aura-light-purple: #C4B5FD;
+  --aura-blue: #38BDF8;
+  --aura-bg: rgba(17, 24, 39, 0.75);
+  --aura-border: rgba(255, 255, 255, 0.1);
+  --aura-text: #fff;
+  --aura-text-muted: rgba(255, 255, 255, 0.7);
+  --aura-radius-full: 9999px;
+  --aura-radius-lg: 50px;
+  --aura-radius-md: 16px;
+  --aura-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+/* Critical Protection Rules - HIGH PRIORITY */
+.aura-ui,
+.aura-sidebar,
+.aura-window,
+[data-aura-ui],
+[data-aura-protected="true"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.aura-sidebar,
+[data-aura-ui="sidebar"] {
+  display: flex !important;
+}
+
+/* Prevent removal or hiding by other scripts */
+.aura-ui[style*="display: none"],
+.aura-ui[style*="visibility: hidden"],
+.aura-ui[style*="opacity: 0"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.aura-sidebar[style*="display: none"] {
+  display: flex !important;
+}
+
+/* Prevent style conflicts */
+.aura-ui * {
+  font-family: 'Inter', sans-serif !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Draggable sidebar - CONSOLIDATED */
+.aura-sidebar,
+[data-aura-ui="sidebar"] {
+  position: fixed !important;
+  width: 60px !important;
+  height: auto !important;
+  background: var(--aura-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--aura-border) !important;
+  border-radius: var(--aura-radius-md) !important;
+  box-shadow: var(--aura-shadow) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  padding: 12px 0 !important;
+  z-index: 999998 !important;
+  cursor: grab !important;
+  user-select: none !important;
+  pointer-events: auto !important;
+  touch-action: none !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  /* Default positioning */
+  left: 20px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+
+.aura-sidebar:active {
+  cursor: grabbing !important;
+}
+
+.aura-logo {
+  width: 40px !important;
+  height: 40px !important;
+  margin-bottom: 16px !important;
+  position: relative !important;
+  pointer-events: none !important;
+  /* Let events pass through to parent */
+}
+
+.aura-status {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: var(--aura-text-muted) !important;
+  text-align: center !important;
+  width: 100% !important;
+  padding: 6px 0 !important;
+  position: relative !important;
+  pointer-events: none !important;
+  /* Let events pass through to parent */
+}
+
+.aura-status::before {
+  content: '' !important;
+  display: inline-block !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  margin-right: 4px !important;
+  background: #10B981 !important;
+  /* Default: Idle (green) */
+  vertical-align: middle !important;
+  pointer-events: none !important;
+}
+
+.aura-status.working::before {
+  background: var(--aura-purple) !important;
+  animation: pulse 1.5s infinite !important;
+}
+
+.aura-status.terminated::before {
+  background: #EF4444 !important;
+}
+
+.aura-status.executed::before {
+  background: var(--aura-blue) !important;
+}
+
+.aura-controls {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  margin-top: 12px !important;
+}
+
+.aura-control-btn {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: var(--aura-radius-full) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  color: var(--aura-text) !important;
+  transition: background 0.2s, transform 0.2s !important;
+  padding: 0 !important;
+  pointer-events: auto !important;
+  /* Ensure clickable */
+}
+
+.aura-control-btn:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: translateY(-2px) !important;
+}
+
+.aura-control-btn svg {
+  width: 20px !important;
+  height: 20px !important;
+  stroke: currentColor !important;
+  stroke-width: 2 !important;
+  pointer-events: none !important;
+  /* Let events pass through to button */
+}
+
+/* Main Floating Window - FIXED */
+.aura-window,
+[data-aura-ui="window"] {
+  position: fixed !important;
+  width: 400px !important;
+  max-width: calc(100vw - 60px) !important;
+  background: var(--aura-bg) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--aura-border) !important;
+  border-radius: var(--aura-radius-md) !important;
+  box-shadow: var(--aura-shadow) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  z-index: 999997 !important;
+  transform: translateY(20px) scale(0.98) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  overflow: hidden !important;
+}
+
+.aura-window.visible {
+  transform: translateY(0) scale(1) !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Window Drag Handle - FIXED */
+.aura-window-drag-handle {
+  position: relative !important;
+  cursor: grab !important;
+  user-select: none !important;
+  touch-action: none !important;
+  width: 100% !important;
+}
+
+.aura-window-drag-handle:active {
+  cursor: grabbing !important;
+}
+
+.aura-window-header {
+  padding: 16px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  user-select: none !important;
+}
+
+.aura-window-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  pointer-events: none !important;
+  /* Important for dragging */
+}
+
+.aura-window-title h3 {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: var(--aura-text) !important;
+  margin: 0 !important;
+  background: linear-gradient(90deg, var(--aura-light-purple), var(--aura-purple)) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  pointer-events: none !important;
+}
+
+.aura-window-close {
+  background: transparent !important;
+  border: none !important;
+  color: var(--aura-text-muted) !important;
+  cursor: pointer !important;
+  padding: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--aura-radius-md) !important;
+  transition: background 0.2s, color 0.2s !important;
+  pointer-events: auto !important;
+  /* Make sure it's clickable */
+  z-index: 2 !important;
+  /* Ensure above the drag handle */
+}
+
+.aura-window-close:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: var(--aura-text) !important;
+}
+
+.aura-window-close svg {
+  width: 20px !important;
+  height: 20px !important;
+  stroke: currentColor !important;
+  stroke-width: 2 !important;
+  pointer-events: none !important;
+}
+
+.aura-chat-history {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  max-height: 320px !important;
+  min-height: 100px !important;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%) !important;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%) !important;
+}
+
+.aura-chat-history::-webkit-scrollbar {
+  width: 0px !important;
+  /* Hide scrollbar but allow scrolling */
+}
+
+.aura-message {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  animation: fadeIn 0.3s ease-out !important;
+}
+
+.aura-message-icon {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.aura-message-icon svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: var(--aura-text) !important;
+  stroke-width: 2 !important;
+}
+
+.aura-message-content {
+  flex: 1 !important;
+}
+
+.aura-message-time {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: var(--aura-text-muted) !important;
+  margin-bottom: 4px !important;
+}
+
+.aura-message-text {
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  color: var(--aura-text) !important;
+}
+
+.aura-input-area {
+  padding: 16px !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.aura-input-container {
+  display: flex !important;
+  align-items: flex-end !important;
+  gap: 12px !important;
+  position: relative !important;
+}
+
+.aura-mic-btn {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: var(--aura-radius-full) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  cursor: pointer !important;
+  transition: background 0.2s !important;
+}
+
+.aura-mic-btn:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.aura-mic-btn.listening {
+  background: rgba(239, 68, 68, 0.2) !important;
+}
+
+.aura-mic-btn svg {
+  width: 22px !important;
+  height: 22px !important;
+  stroke: var(--aura-text) !important;
+  stroke-width: 2 !important;
+}
+
+.aura-textarea {
+  flex: 1 !important;
+  height: 50px !important;
+  max-height: 150px !important;
+  border-radius: var(--aura-radius-lg) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid var(--aura-border) !important;
+  padding: 15px 20px !important;
+  color: var(--aura-text) !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  resize: none !important;
+  overflow-y: hidden !important;
+  /* Hide scrollbar but keep functionality */
+  transition: border-color 0.2s !important;
+}
+
+.aura-textarea:focus {
+  outline: none !important;
+  border-color: var(--aura-violet) !important;
+}
+
+.aura-textarea::placeholder {
+  color: var(--aura-text-muted) !important;
+}
+
+.aura-send-btn {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: var(--aura-radius-full) !important;
+  background: linear-gradient(135deg, var(--aura-purple), var(--aura-violet)) !important;
+  border: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  cursor: pointer !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3) !important;
+}
+
+.aura-send-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4) !important;
+}
+
+.aura-send-btn:active {
+  transform: translateY(0) !important;
+}
+
+.aura-send-btn.terminate {
+  background: linear-gradient(135deg, #EF4444, #DC2626) !important;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3) !important;
+}
+
+.aura-send-btn svg {
+  width: 22px !important;
+  height: 22px !important;
+  stroke: white !important;
+  stroke-width: 2 !important;
+}
+
+/* Aurora Background Effect for window */
+.aura-aurora {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+  overflow: hidden !important;
+  opacity: 0.4 !important;
+}
+
+.aura-aurora-shape {
+  position: absolute !important;
+  border-radius: 100% !important;
+  filter: blur(80px) !important;
+}
+
+.aura-aurora-shape1 {
+  width: 300px !important;
+  height: 300px !important;
+  background: var(--aura-purple) !important;
+  top: -150px !important;
+  left: -150px !important;
+  animation: float1 20s infinite alternate ease-in-out !important;
+}
+
+.aura-aurora-shape2 {
+  width: 250px !important;
+  height: 250px !important;
+  background: var(--aura-violet) !important;
+  bottom: -100px !important;
+  right: -100px !important;
+  animation: float2 25s infinite alternate ease-in-out !important;
+}
+
+.aura-aurora-shape3 {
+  width: 200px !important;
+  height: 200px !important;
+  background: var(--aura-blue) !important;
+  bottom: 100px !important;
+  right: 150px !important;
+  animation: float3 15s infinite alternate ease-in-out !important;
+}
+
+/* Thinking animation */
+.aura-thinking {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  margin-left: 4px !important;
+}
+
+.aura-thinking-dot {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background: var(--aura-text) !important;
+  animation: thinkingPulse 1.5s infinite !important;
+  opacity: 0.6 !important;
+}
+
+.aura-thinking-dot:nth-child(2) {
+  animation-delay: 0.2s !important;
+}
+
+.aura-thinking-dot:nth-child(3) {
+  animation-delay: 0.4s !important;
+}
+
+/* Animations */
+@keyframes float1 {
+  from {
+    transform: translate(0, 0);
+  }
+
+  to {
+    transform: translate(50px, 30px);
+  }
+}
+
+@keyframes float2 {
+  from {
+    transform: translate(-30px, -20px);
+  }
+
+  to {
+    transform: translate(20px, 10px);
+  }
+}
+
+@keyframes float3 {
+  from {
+    transform: translate(0, 0);
+  }
+
+  to {
+    transform: translate(-30px, 20px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes thinkingPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .aura-window {
+    width: calc(100vw - 60px) !important;
+    right: 20px !important;
+    bottom: 20px !important;
+  }
+
+  .aura-sidebar {
+    top: 20px !important;
+    transform: none !important;
+  }
+}

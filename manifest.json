@@ -1,0 +1,85 @@
+{
+  "manifest_version": 3,
+  "name": "Aura Web Co-Pilot",
+  "version": "2.1.0",
+  "description": "An AI-powered web assistant capable of handling complex tasks with ease.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "tabs",
+    "debugger",
+    "clipboardRead",
+    "clipboardWrite",
+    "webNavigation",
+    "background",
+    "notifications"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "src/background/main.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Aura Web Co-Pilot",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js",
+        "content_ui.js",
+        "floating-ui.js"
+      ],
+      "css": [
+        "floating-ui.css"
+      ],
+      "run_at": "document_end",
+      "all_frames": false
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "icons/*.png",
+        "floating-ui.css",
+        "content_ui.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "commands": {
+    "toggle-assistant": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+A",
+        "mac": "Command+Shift+A"
+      },
+      "description": "Toggle Aura Assistant"
+    },
+    "emergency-stop": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "Emergency stop current task"
+    }
+  }
+}
