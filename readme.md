@@ -2,11 +2,10 @@
   <img src="icon32.svg" alt="Aura Web Co-Pilot Logo" width="100">
 </p>
 
-# 🤖 Aura Web Co-Pilot
+# 🤖 Aura Web Co-Pilot (Chrome Extension)
 
 [![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/sablekunal/aura_copilot)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Chrome Web Store](https://img.shields.io/badge/Chrome-Extension-green.svg)](https://chrome.google.com/webstore)
 
 > Automate complex web tasks with AI-powered precision. Beautiful, reliable, and intelligent.
 
@@ -38,7 +37,7 @@
 ## 🎯 Usage
 
 **Simple**: "Find the latest AI news"  
-**Complex**: "Research smartphones under $500 and compare them"  
+**Complex**: "Research smartphones under 20000 rs and compare them"  
 **Advanced**: "Analyze stock trends and suggest investments"
 
 **Shortcuts**: `Ctrl+Shift+A` to toggle, `Ctrl+Shift+S` to stop.
