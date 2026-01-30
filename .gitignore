@@ -27,5 +27,3 @@ pnpm-debug.log*
 # Extension
 *.pem
 .crx
-
-readme.md
