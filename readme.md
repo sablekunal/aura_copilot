@@ -7,8 +7,6 @@
 [![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/sablekunal/aura_copilot)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-=======
->>>>>>> eda1bf41090f5701087658b21a74da6016cd1d1b
 
 > Automate complex web tasks with AI-powered precision. Beautiful, reliable, and intelligent.
 
