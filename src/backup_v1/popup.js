@@ -1,6 +1,6 @@
-// popup.js - Aura Co-Pilot
+// popup.js - Aura Co-Pilot Settings
 document.addEventListener('DOMContentLoaded', function () {
-  console.log('🔧 Aura Co-Pilot loaded, starting diagnostics...');
+  console.log('🔧 Popup loaded, starting diagnostics...');
 
   // Test chrome.storage availability
   if (typeof chrome.storage === 'undefined') {
@@ -22,10 +22,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const backBtn = document.getElementById('back-btn');
   const taskDuration = document.getElementById('task-duration');
   const durationDisplay = document.getElementById('duration-display');
-  const executionSpeed = document.getElementById('execution-speed');
-  const retryStrategy = document.getElementById('retry-strategy');
-  const smartRecovery = document.getElementById('smart-recovery');
-  const advancedMode = document.getElementById('advanced-mode');
   const togglePassword = document.getElementById('toggle-password');
   const contentWrapper = document.querySelector('.popup-content-wrapper');
   const notificationContainer = document.querySelector('.notification-container');
@@ -48,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
       setupSliders();
       setupEventListeners();
 
-      console.log('✅ Aura Co-Pilot initialization complete');
+      console.log('✅ Popup initialization complete');
     } catch (error) {
       console.error('❌ Popup initialization failed:', error);
       showNotification('Initialization failed', 'error');
@@ -111,21 +107,34 @@ document.addEventListener('DOMContentLoaded', function () {
           apiKey: settings.apiKey ? '***hidden***' : '(empty)'
         });
 
-        // Populate form with loaded settings
-        if (settings.model || settings.modelName) {
-          const model = settings.model || settings.modelName;
-          selectedModelInput.value = model;
-          updateModelFilterDisplay(model);
+        // Check what we actually have
+        const hasModel = settings.model && settings.model.trim();
+        const hasEndpoint = settings.endpoint && settings.endpoint.trim();
+        const hasApiKey = settings.apiKey && settings.apiKey.trim();
+
+        console.log('🔍 Settings analysis:', {
+          hasModel: !!hasModel,
+          hasEndpoint: !!hasEndpoint,
+          hasApiKey: !!hasApiKey,
+          configured: settings.configured
+        });
+
+        // Populate form with loaded settings (NO automatic endpoint override)
+        if (settings.model) {
+          selectedModelInput.value = settings.model;
+          updateModelFilterDisplay(settings.model);
         } else {
+          // Set default model only
           selectedModelInput.value = 'gpt-4o';
           updateModelFilterDisplay('gpt-4o');
         }
 
-        // Load endpoint (prefer baseUrl for J3 compatibility)
-        if (settings.endpoint || settings.baseUrl) {
-          apiEndpoint.value = settings.endpoint || settings.baseUrl;
+        // ALWAYS respect user's custom endpoint - never override it
+        if (settings.endpoint) {
+          apiEndpoint.value = settings.endpoint;
         } else {
-          apiEndpoint.value = 'https://api.openai.com/v1';
+          // Only set default if no saved endpoint exists
+          apiEndpoint.value = 'https://aiproxy.9qw.ru/v1';
         }
 
         if (settings.apiKey) {
@@ -139,26 +148,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (autoAssist) autoAssist.checked = settings.autoAssist !== false;
         if (localProcessing) localProcessing.checked = settings.localProcessing !== false;
 
-        // Load advanced settings
+        // Load task duration
         if (taskDuration) {
           taskDuration.value = settings.taskDuration || 2;
           updateDurationDisplay();
-        }
-
-        if (executionSpeed) {
-          executionSpeed.value = settings.executionSpeed || 3;
-        }
-
-        if (retryStrategy) {
-          retryStrategy.value = settings.retryStrategy || 'balanced';
-        }
-
-        if (smartRecovery) {
-          smartRecovery.checked = settings.smartRecovery !== false;
-        }
-
-        if (advancedMode) {
-          advancedMode.checked = settings.advancedMode === true;
         }
 
         resolve();
@@ -174,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set default selection
     const defaultOption = modelDropdown.querySelector('.select-option[data-value="gpt-4o"]');
     if (defaultOption && !selectedModelInput.value) {
-      selectOption(defaultOption, false);
+      selectOption(defaultOption, false); // false = don't change endpoint
     }
 
     // Handle input filtering
@@ -207,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
     modelDropdown.addEventListener('click', (e) => {
       const option = e.target.closest('.select-option');
       if (option) {
-        selectOption(option, false);
+        selectOption(option, false); // false = don't change endpoint
         modelDropdown.classList.remove('active');
       }
     });
@@ -225,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         const visibleOption = modelDropdown.querySelector('.select-option:not([style*="none"])');
         if (visibleOption) {
-          selectOption(visibleOption, false);
+          selectOption(visibleOption, false); // false = don't change endpoint
           modelDropdown.classList.remove('active');
         }
       } else if (e.key === 'Escape') {
@@ -233,6 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
+    // Modified selectOption function - user controls endpoint
     function selectOption(option, changeEndpoint = false) {
       // Remove previous selection
       options.forEach(opt => opt.classList.remove('selected'));
@@ -246,13 +240,18 @@ document.addEventListener('DOMContentLoaded', function () {
       modelFilter.value = modelName;
       selectedModelInput.value = modelValue;
 
-      // Only change endpoint if explicitly requested
+      // Only change endpoint if explicitly requested (like on reset or first load)
       if (changeEndpoint && suggestedEndpoint && apiEndpoint) {
         apiEndpoint.value = suggestedEndpoint;
         console.log('🔄 Endpoint updated to suggested value:', suggestedEndpoint);
       }
 
-      console.log('🔄 Model selected:', { modelName, modelValue });
+      console.log('🔄 Model selected:', {
+        modelName,
+        modelValue,
+        endpointChanged: changeEndpoint,
+        currentEndpoint: apiEndpoint?.value
+      });
 
       // Show endpoint recommendation without changing it
       if (!changeEndpoint && suggestedEndpoint) {
@@ -260,12 +259,16 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
+    // Show non-intrusive endpoint recommendation
     function showEndpointRecommendation(modelName, suggestedEndpoint) {
       const currentEndpoint = apiEndpoint?.value.trim();
 
+      // Only show if current endpoint is different from suggestion
       if (currentEndpoint && currentEndpoint !== suggestedEndpoint) {
         console.log(`💡 Endpoint recommendation for ${modelName}: ${suggestedEndpoint}`);
 
+        // You can add a small info tooltip here if desired
+        // For now, just log the recommendation
         setTimeout(() => {
           showNotification(
             `💡 Recommended endpoint for ${modelName}: ${suggestedEndpoint}`,
@@ -294,21 +297,23 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function setupSliders() {
-    if (taskDuration && durationDisplay) {
-      updateDurationDisplay();
-      taskDuration.addEventListener('input', () => {
-        updateDurationDisplay();
-        const currentValue = parseInt(taskDuration.value);
-        chrome.storage.local.set({ taskDuration: currentValue });
-      });
-    }
+    if (!taskDuration || !durationDisplay) return;
 
-    if (executionSpeed) {
-      executionSpeed.addEventListener('input', () => {
-        const currentValue = parseInt(executionSpeed.value);
-        chrome.storage.local.set({ executionSpeed: currentValue });
+    // Initialize duration display
+    updateDurationDisplay();
+
+    // Handle slider changes
+    taskDuration.addEventListener('input', () => {
+      updateDurationDisplay();
+
+      // Auto-save duration change
+      const currentValue = parseInt(taskDuration.value);
+      chrome.storage.local.set({ taskDuration: currentValue }, () => {
+        if (!chrome.runtime.lastError) {
+          console.log('🔄 Task duration updated:', currentValue, 'minutes');
+        }
       });
-    }
+    });
   }
 
   function updateDurationDisplay() {
@@ -370,25 +375,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    // Advanced options auto-save
-    if (retryStrategy) {
-      retryStrategy.addEventListener('change', () => {
-        chrome.storage.local.set({ retryStrategy: retryStrategy.value });
-      });
-    }
-
-    if (smartRecovery) {
-      smartRecovery.addEventListener('change', () => {
-        chrome.storage.local.set({ smartRecovery: smartRecovery.checked });
-      });
-    }
-
-    if (advancedMode) {
-      advancedMode.addEventListener('change', () => {
-        chrome.storage.local.set({ advancedMode: advancedMode.checked });
-      });
-    }
-
     // Add endpoint validation helper
     if (apiEndpoint) {
       apiEndpoint.addEventListener('blur', validateEndpointFormat);
@@ -404,14 +390,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     try {
       new URL(endpoint);
-      apiEndpoint.style.borderColor = '';
+      apiEndpoint.style.borderColor = ''; // Reset to default
       console.log('✅ Valid endpoint format:', endpoint);
     } catch (e) {
-      apiEndpoint.style.borderColor = '#ef4444';
+      apiEndpoint.style.borderColor = '#ef4444'; // Red border for invalid URL
       console.log('⚠️ Invalid endpoint format:', endpoint);
     }
   }
 
+  // Utility function for debouncing
   function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -459,20 +446,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const settings = {
-      // Aura format
       model: model,
-      endpoint: endpoint,
+      endpoint: endpoint, // User-controlled endpoint
       apiKey: apiKeyValue,
       autoAssist: document.getElementById('auto-assist')?.checked || false,
       localProcessing: document.getElementById('local-processing')?.checked || false,
       taskDuration: parseInt(taskDuration?.value || 2),
-      executionSpeed: parseInt(executionSpeed?.value || 3),
-      retryStrategy: retryStrategy?.value || 'balanced',
-      smartRecovery: smartRecovery?.checked !== false,
-      advancedMode: advancedMode?.checked === true,
       configured: true,
       lastUpdated: new Date().toISOString(),
-      // J3 compatibility mappings
+      // J3 backend compatibility mappings
       baseUrl: endpoint,
       modelName: model
     };
@@ -513,10 +495,10 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         console.log('✅ Settings reset successfully');
 
-        // Reset form values
+        // Reset form values with your preferred defaults
         selectedModelInput.value = 'gpt-4o';
         updateModelFilterDisplay('gpt-4o');
-        apiEndpoint.value = 'https://api.openai.com/v1';
+        apiEndpoint.value = 'https://aiproxy.9qw.ru/v1'; // Your preferred default
         apiKey.value = '';
 
         const autoAssist = document.getElementById('auto-assist');
@@ -529,27 +511,12 @@ document.addEventListener('DOMContentLoaded', function () {
           updateDurationDisplay();
         }
 
-        if (executionSpeed) {
-          executionSpeed.value = 3;
-        }
-
-        if (retryStrategy) {
-          retryStrategy.value = 'balanced';
-        }
-
-        if (smartRecovery) {
-          smartRecovery.checked = true;
-        }
-
-        if (advancedMode) {
-          advancedMode.checked = false;
-        }
-
         showNotification('Settings reset to defaults', 'success');
       }
     });
   }
 
+  // Rest of the functions remain the same...
   function verifySavedSettings(expectedSettings) {
     console.log('🔍 Verifying saved settings...');
 
@@ -586,21 +553,14 @@ document.addEventListener('DOMContentLoaded', function () {
   function notifyExtensionComponents(settings) {
     console.log('📢 Notifying extension components...');
 
-    // Notify background script with both formats
+    // Notify background script with J3 format
     try {
       chrome.runtime.sendMessage({
         type: 'UPDATE_SETTINGS',
         settings: {
-          // J3 format for backend compatibility
           apiKey: settings.apiKey,
           baseUrl: settings.endpoint,
-          modelName: settings.model,
-          // Additional settings
-          taskDuration: settings.taskDuration,
-          executionSpeed: settings.executionSpeed,
-          retryStrategy: settings.retryStrategy,
-          smartRecovery: settings.smartRecovery,
-          advancedMode: settings.advancedMode
+          modelName: settings.model
         }
       }, (response) => {
         if (chrome.runtime.lastError) {

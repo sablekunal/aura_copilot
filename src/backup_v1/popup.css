@@ -8,6 +8,92 @@
   --aura-bg: #111827;
   --aura-card-bg: rgba(31, 41, 55, 0.8);
   --aura-border: rgba(255, 255, 255, 0.1);
+  --aura-text: #fffff;
+  --aura-text-muted: rgba(255, 255, 255, 0.7);
+  --aura-text-subtle: rgba(255, 255, 255, 0.5);
+  --aura-radius-lg: 16px;
+  --aura-radius-md: 12px;
+  --aura-radius-sm: 8px;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: var(--aura-bg);
+  color: var(--aura-text);
+  width: 360px;
+  min-height: 480px;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ... (Aurora background effect - unchanged) */
+
+/* Swipe-specific styles (fixed with translateX(-50%) and flex) */
+.popup-content-wrapper {
+  width: 200%;
+  display: flex;
+  flex-direction: row;
+  transition: transform var(--transition-slow);
+  touch-action: pan-y;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  /* Prevent side scroll, but allow content visibility */
+}
+
+.popup-content {
+  flex: 1 0 50%;
+  min-width: 50%;
+  padding: 24px;
+  background: var(--aura-bg);
+  color: var(--aura-text);
+  display: flex;
+  flex-direction: column;
+}
+
+.advanced-panel {
+  flex: 1 0 50%;
+  min-width: 50%;
+  background: var(--aura-bg);
+  color: var(--aura-text);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Checkbox SVG styles */
+.checkbox-icon {
+  width: 18px;
+  height: 18px;
+  stroke: var(--aura-light-purple);
+  stroke-width: 2;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* Option icon in dropdown */
+.option-icon {
+  width: 16px;
+  height: 16px;
+  stroke: var(--aura-text-muted);
+  margin-right: 8px;
+}
+
+:root {
+  --aura-purple: #A855F7;
+  --aura-violet: #8B5CF6;
+  --aura-light-purple: #C4B5FD;
+  --aura-blue: #38BDF8;
+  --aura-bg: #111827;
+  --aura-card-bg: rgba(31, 41, 55, 0.8);
+  --aura-border: rgba(255, 255, 255, 0.1);
   --aura-text: #fff;
   --aura-text-muted: rgba(255, 255, 255, 0.7);
   --aura-text-subtle: rgba(255, 255, 255, 0.5);
@@ -34,7 +120,7 @@ body {
   position: relative;
 }
 
-/* Aurora background effect */
+/* Aurora background effect (unchanged) */
 .popup-aurora {
   position: fixed;
   top: 0;
@@ -78,7 +164,7 @@ body {
   opacity: 0.3;
 }
 
-/* Swipe-specific styles */
+/* Swipe-specific styles (fixed visibility with z-index and overflow) */
 .popup-content-wrapper {
   width: 200%;
   display: flex;
@@ -88,6 +174,7 @@ body {
   position: relative;
   z-index: 1;
   overflow: visible;
+  /* Fixed visibility issue */
 }
 
 .popup-content {
@@ -133,10 +220,11 @@ body {
   border-top: 1px solid var(--aura-border);
 }
 
-/* Form select dropdown */
+/* Fixed Retry Strategy dropdown CSS */
 .form-select {
   width: 100%;
   padding: 10px 40px 10px 12px;
+  /* Space for icon */
   background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--aura-radius-sm);
@@ -169,6 +257,14 @@ body {
   background: rgba(255, 255, 255, 0.1);
 }
 
+/* Styles for icons in options (SVG size) */
+.form-select option svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--aura-text-muted);
+}
+
+/* Your original styles (unchanged, placed below for completeness) */
 .popup-header {
   text-align: center;
   margin-bottom: 24px;
@@ -185,6 +281,7 @@ body {
   font-weight: 700;
   margin-bottom: 4px;
   background: linear-gradient(90deg, var(--aura-light-purple), var(--aura-purple));
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -333,7 +430,7 @@ body {
   background: #10B981;
 }
 
-/* Custom Select Dropdown */
+/* Custom Select Dropdown (unchanged) */
 .custom-select-container {
   position: relative;
 }
@@ -402,7 +499,7 @@ body {
   background-size: 16px;
 }
 
-/* Notification system */
+/* Notification system (unchanged) */
 .notification-container {
   position: fixed;
   top: 20px;
@@ -451,6 +548,7 @@ body {
     opacity: 0;
     transform: translateX(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -462,6 +560,7 @@ body {
     opacity: 1;
     transform: translateX(0);
   }
+
   to {
     opacity: 0;
     transform: translateX(20px);
@@ -472,23 +571,27 @@ body {
   animation: slideOut 0.3s ease-in forwards;
 }
 
-/* Slider styles */
-.duration-container, .speed-container {
+/* Slider styles (synced with theme) */
+.duration-container,
+.speed-container {
   margin-top: 8px;
 }
 
-.duration-slider, .speed-slider {
+.duration-slider,
+.speed-slider {
   width: 100%;
   height: 6px;
   border-radius: 3px;
   background: rgba(255, 255, 255, 0.1);
   outline: none;
   -webkit-appearance: none;
+  appearance: none;
   margin-bottom: 12px;
   cursor: pointer;
 }
 
-.duration-slider::-webkit-slider-thumb, .speed-slider::-webkit-slider-thumb {
+.duration-slider::-webkit-slider-thumb,
+.speed-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 20px;
@@ -500,12 +603,14 @@ body {
   transition: all 0.2s;
 }
 
-.duration-slider::-webkit-slider-thumb:hover, .speed-slider::-webkit-slider-thumb:hover {
+.duration-slider::-webkit-slider-thumb:hover,
+.speed-slider::-webkit-slider-thumb:hover {
   transform: scale(1.1);
   box-shadow: 0 4px 12px rgba(168, 85, 247, 0.5);
 }
 
-.duration-slider::-moz-range-thumb, .speed-slider::-moz-range-thumb {
+.duration-slider::-moz-range-thumb,
+.speed-slider::-moz-range-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -546,7 +651,7 @@ body {
   color: var(--aura-text-subtle);
 }
 
-/* Password toggle */
+/* Password toggle (unchanged) */
 .password-container {
   position: relative;
 }
@@ -567,25 +672,7 @@ body {
   height: 18px;
 }
 
-/* Checkbox SVG styles */
-.checkbox-icon {
-  width: 18px;
-  height: 18px;
-  stroke: var(--aura-light-purple);
-  stroke-width: 2;
-  margin-right: 8px;
-  vertical-align: middle;
-}
-
-/* Option icon in dropdown */
-.option-icon {
-  width: 16px;
-  height: 16px;
-  stroke: var(--aura-text-muted);
-  margin-right: 8px;
-}
-
-/* Tooltip for swipe hint */
+/* Tooltip for swipe hint (on title, optional visual cue) */
 [data-tooltip] {
   position: relative;
   cursor: pointer;

@@ -46,7 +46,7 @@
           </svg>
         </div>
         <h1 class="popup-title">Aura Co-Pilot</h1>
-        <p class="popup-subtitle">Your Intelligent Web Assistant</p>
+        <p class="popup-subtitle">Your Super-Intelligent Web Assistant</p>
         <div class="status-row">
           <span class="status-indicator"></span>
           <span>Active and ready</span>
@@ -91,6 +91,23 @@
               <div class="select-option" data-value="llama-3-70b" data-endpoint="https://api.together.xyz/v1">
                 <div class="model-name">Llama 3 (70B)</div>
                 <div class="model-code">llama-3-70b</div>
+              </div>
+              <div class="select-option" data-value="mistral-large" data-endpoint="https://api.mistral.ai/v1">
+                <div class="model-name">Mistral Large</div>
+                <div class="model-code">mistral-large</div>
+              </div>
+              <div class="select-option" data-value="falcon-180b" data-endpoint="https://api.huggingface.co/models">
+                <div class="model-name">Falcon (180B)</div>
+                <div class="model-code">falcon-180b</div>
+              </div>
+              <div class="select-option" data-value="command-r" data-endpoint="https://api.cohere.ai/v1">
+                <div class="model-name">Command R</div>
+                <div class="model-code">command-r</div>
+              </div>
+              <div class="select-option" data-value="palm-2"
+                data-endpoint="https://generativelanguage.googleapis.com/v1">
+                <div class="model-name">PaLM 2</div>
+                <div class="model-code">palm-2</div>
               </div>
             </div>
             <input type="hidden" id="selected-model" value="gpt-4o" />
@@ -158,6 +175,7 @@
       <header class="popup-header">
         <div class="popup-logo">
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- Same SVG as main panel -->
             <defs>
               <linearGradient id="auraSwooshGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stop-color="#C4B5FD" />
@@ -203,7 +221,6 @@
             <div class="duration-info">
               <small>📝 1-30 min: Quick tasks</small>
               <small>🔥 30-60 min: Complex workflows</small>
-              <small>⚡ 1-5 hours: Advanced challenges</small>
             </div>
           </div>
         </div>
@@ -220,13 +237,13 @@
         <div class="form-group">
           <label class="form-label" for="execution-speed">Execution Speed</label>
           <div class="speed-container">
-            <input type="range" class="speed-slider" id="execution-speed" min="1" max="5" value="3" step="1" />
+            <input type="range" class="speed-slider" id="execution-speed" min="1" max="CSR 5" value="3" step="1" />
             <div class="speed-labels">
               <span>🐌 Careful</span>
               <span>🚶 Normal</span>
               <span>🏃 Fast</span>
               <span>⚡ Turbo</span>
-              <span>🚀 Insane</span>
+              <span>🚀 Ludicrous</span>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-/* Aura Co-Pilot 2 - Enhanced Floating UI */
+/* Aura Web Co-Pilot - Floating UI */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
@@ -54,7 +54,7 @@
   padding: 0 !important;
 }
 
-/* Enhanced Draggable Sidebar */
+/* Draggable sidebar - CONSOLIDATED */
 .aura-sidebar,
 [data-aura-ui="sidebar"] {
   position: fixed !important;
@@ -70,13 +70,14 @@
   flex-direction: column !important;
   align-items: center !important;
   padding: 12px 0 !important;
-  z-index: 2147483647 !important;
-  cursor: move !important;
+  z-index: 999998 !important;
+  cursor: grab !important;
   user-select: none !important;
   pointer-events: auto !important;
   touch-action: none !important;
   visibility: visible !important;
   opacity: 1 !important;
+  /* Default positioning */
   left: 20px !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
@@ -92,6 +93,7 @@
   margin-bottom: 16px !important;
   position: relative !important;
   pointer-events: none !important;
+  /* Let events pass through to parent */
 }
 
 .aura-status {
@@ -103,6 +105,7 @@
   padding: 6px 0 !important;
   position: relative !important;
   pointer-events: none !important;
+  /* Let events pass through to parent */
 }
 
 .aura-status::before {
@@ -113,6 +116,7 @@
   border-radius: 50% !important;
   margin-right: 4px !important;
   background: #10B981 !important;
+  /* Default: Idle (green) */
   vertical-align: middle !important;
   pointer-events: none !important;
 }
@@ -151,6 +155,7 @@
   transition: background 0.2s, transform 0.2s !important;
   padding: 0 !important;
   pointer-events: auto !important;
+  /* Ensure clickable */
 }
 
 .aura-control-btn:hover {
@@ -164,9 +169,10 @@
   stroke: currentColor !important;
   stroke-width: 2 !important;
   pointer-events: none !important;
+  /* Let events pass through to button */
 }
 
-/* Enhanced Main Window */
+/* Main Floating Window - FIXED */
 .aura-window,
 [data-aura-ui="window"] {
   position: fixed !important;
@@ -195,10 +201,10 @@
   pointer-events: auto !important;
 }
 
-/* Window Drag Handle */
+/* Window Drag Handle - FIXED */
 .aura-window-drag-handle {
   position: relative !important;
-  cursor: move !important;
+  cursor: grab !important;
   user-select: none !important;
   touch-action: none !important;
   width: 100% !important;
@@ -222,6 +228,7 @@
   align-items: center !important;
   gap: 8px !important;
   pointer-events: none !important;
+  /* Important for dragging */
 }
 
 .aura-window-title h3 {
@@ -231,6 +238,7 @@
   margin: 0 !important;
   background: linear-gradient(90deg, var(--aura-light-purple), var(--aura-purple)) !important;
   -webkit-background-clip: text !important;
+  background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   pointer-events: none !important;
 }
@@ -247,7 +255,9 @@
   border-radius: var(--aura-radius-md) !important;
   transition: background 0.2s, color 0.2s !important;
   pointer-events: auto !important;
+  /* Make sure it's clickable */
   z-index: 2 !important;
+  /* Ensure above the drag handle */
 }
 
 .aura-window-close:hover {
@@ -272,10 +282,13 @@
   gap: 12px !important;
   max-height: 320px !important;
   min-height: 100px !important;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%) !important;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 100%) !important;
 }
 
 .aura-chat-history::-webkit-scrollbar {
   width: 0px !important;
+  /* Hide scrollbar but allow scrolling */
 }
 
 .aura-message {
@@ -375,6 +388,7 @@
   line-height: 1.5 !important;
   resize: none !important;
   overflow-y: hidden !important;
+  /* Hide scrollbar but keep functionality */
   transition: border-color 0.2s !important;
 }
 
@@ -423,6 +437,52 @@
   stroke-width: 2 !important;
 }
 
+/* Aurora Background Effect for window */
+.aura-aurora {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+  overflow: hidden !important;
+  opacity: 0.4 !important;
+}
+
+.aura-aurora-shape {
+  position: absolute !important;
+  border-radius: 100% !important;
+  filter: blur(80px) !important;
+}
+
+.aura-aurora-shape1 {
+  width: 300px !important;
+  height: 300px !important;
+  background: var(--aura-purple) !important;
+  top: -150px !important;
+  left: -150px !important;
+  animation: float1 20s infinite alternate ease-in-out !important;
+}
+
+.aura-aurora-shape2 {
+  width: 250px !important;
+  height: 250px !important;
+  background: var(--aura-violet) !important;
+  bottom: -100px !important;
+  right: -100px !important;
+  animation: float2 25s infinite alternate ease-in-out !important;
+}
+
+.aura-aurora-shape3 {
+  width: 200px !important;
+  height: 200px !important;
+  background: var(--aura-blue) !important;
+  bottom: 100px !important;
+  right: 150px !important;
+  animation: float3 15s infinite alternate ease-in-out !important;
+}
+
 /* Thinking animation */
 .aura-thinking {
   display: inline-flex !important;
@@ -449,6 +509,36 @@
 }
 
 /* Animations */
+@keyframes float1 {
+  from {
+    transform: translate(0, 0);
+  }
+
+  to {
+    transform: translate(50px, 30px);
+  }
+}
+
+@keyframes float2 {
+  from {
+    transform: translate(-30px, -20px);
+  }
+
+  to {
+    transform: translate(20px, 10px);
+  }
+}
+
+@keyframes float3 {
+  from {
+    transform: translate(0, 0);
+  }
+
+  to {
+    transform: translate(-30px, 20px);
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

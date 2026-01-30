@@ -2,11 +2,11 @@
   <img src="icon32.svg" alt="Aura Web Co-Pilot Logo" width="100">
 </p>
 
-# 🤖 Aura Web Co-Pilot (Chrome Extension)
+# 🤖 Aura Web Co-Pilot
 
 [![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/sablekunal/aura_copilot)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
+[![Chrome Web Store](https://img.shields.io/badge/Chrome-Extension-green.svg)](https://chrome.google.com/webstore)
 
 > Automate complex web tasks with AI-powered precision. Beautiful, reliable, and intelligent.
 

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Aura Web Co-Pilot",
   "version": "2.1.0",
-  "description": "The ultimate AI-powered web assistant with enhanced navigation support. Features lightning-fast task execution, cross-tab synchronization, and intelligent automation.",
+  "description": "An AI-powered web assistant capable of handling complex tasks with ease.",
   "permissions": [
     "storage",
     "activeTab",
@@ -38,6 +38,7 @@
       ],
       "js": [
         "content.js",
+        "content_ui.js",
         "floating-ui.js"
       ],
       "css": [
@@ -51,7 +52,8 @@
     {
       "resources": [
         "icons/*.png",
-        "floating-ui.css"
+        "floating-ui.css",
+        "content_ui.js"
       ],
       "matches": [
         "<all_urls>"
